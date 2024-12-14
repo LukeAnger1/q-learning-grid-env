@@ -43,7 +43,14 @@ Training loop that allows the agent to interact with the environment and improve
    # install dependencies
    pip3 install -r requirements.txt
    ```
-2. Start training <br>
+2. Set variables
+```
+export XDG_RUNTIME_DIR=/tmp/runtime-$USER
+mkdir -p $XDG_RUNTIME_DIR
+chmod 700 $XDG_RUNTIME_DIR
+```
+
+3. Start training <br>
    For frozenlake environment
    ```bash
    python3 train.py --env FrozenLake-v1 --config config/frozenlake.yml
