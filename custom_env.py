@@ -1,3 +1,5 @@
+from typing import Tuple, List, Dict
+
 class Custom:
     """
     This is a class so you can design your own custom Q environment
@@ -18,7 +20,7 @@ class Custom:
         self.action_space = self.ActionSpace("""put n here""")
         self.observation_space = self.ObservationSpace("""put n here""")
 
-    def step(self, action):
+    def step(self, action) -> Tuple[int, float, bool, bool, dict]:
         """
 
         Args:
@@ -27,7 +29,7 @@ class Custom:
         Returns new_state, reward, terminated, truncated, info
         """
 
-    def reset(self, seed = None):
+    def reset(self, seed = None) -> Tuple[int, dict]:
         """
         Reset the state of the object to its initial state.
         Override this method in subclasses if needed.
