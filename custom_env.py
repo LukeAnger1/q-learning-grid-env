@@ -1,4 +1,5 @@
 from typing import Tuple, List, Dict
+import numpy as np
 import random
 
 class Custom:
@@ -41,10 +42,10 @@ class Custom:
 
         returns state, info
         """
-        print(f"Resetting {self.name} to its initial state.")
+        # print(f"Resetting {self.name} to its initial state.")
         return (0, None)
 
-    def render(self, mode="human"):
+    def render(self, mode="human") -> np.array:
         """
         Render the component, if applicable.
 
@@ -54,10 +55,12 @@ class Custom:
         Returns:
             None or an array, depending on the rendering mode.
         """
-        print(f"Rendering {self.name} in {mode} mode.")
+        # print(f"Rendering {self.name} in {mode} mode.")
         if mode == "rgb_array":
             # Example rendering array
-            return [[0, 0, 0], [255, 255, 255], [0, 0, 0]]
+            return np.array([[0, 0, 0], [255, 255, 255], [0, 0, 0]])
+        else:
+            return np.array([[0, 0, 0], [255, 255, 255], [0, 0, 0]])
         
     class ObservationSpace:
         """
