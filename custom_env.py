@@ -1,9 +1,13 @@
 from typing import Tuple, List, Dict
+import random
 
 class Custom:
     """
     This is a class so you can design your own custom Q environment
     """
+
+    # TODO: Make this an input or something but for now that space is of size n
+    n: int = 5
 
     def __init__(self, *args, **kwargs):
         """
@@ -17,8 +21,8 @@ class Custom:
         self.kwargs = kwargs
         self.name = kwargs.get("name", "UnnamedComponent")
         self.metadata = kwargs.get("metadata", {})
-        self.action_space = self.ActionSpace("""put n here""")
-        self.observation_space = self.ObservationSpace("""put n here""")
+        self.action_space = self.ActionSpace(self.n)
+        self.observation_space = self.ObservationSpace(self.n)
 
     def step(self, action) -> Tuple[int, float, bool, bool, dict]:
         """
@@ -28,6 +32,7 @@ class Custom:
 
         Returns new_state, reward, terminated, truncated, info
         """
+        return (0, 0, False, False, None)
 
     def reset(self, seed = None) -> Tuple[int, dict]:
         """
@@ -37,6 +42,7 @@ class Custom:
         returns state, info
         """
         print(f"Resetting {self.name} to its initial state.")
+        return (0, None)
 
     def render(self, mode="human"):
         """
@@ -57,15 +63,15 @@ class Custom:
         """
         Custom observation space for the environment.
         """
-        def __init__(self, n):
-            self.n = n
+        def __init__(self, n: int):
+            self.n: int= n
 
     class ActionSpace:
         """
         Custom action space for the environment.
         """
-        def __init__(self, n):
-            self.n = n
+        def __init__(self, n: int):
+            self.n: int = n
 
         def sample(self):
             """

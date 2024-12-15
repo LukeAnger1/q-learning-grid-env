@@ -1,5 +1,6 @@
 import argparse
 import gymnasium as gym
+import custom_env as custom_env
 import numpy as np
 import yaml
 
@@ -31,7 +32,7 @@ def train(n_training_episodes, min_epsilon, max_epsilon, decay_rate, env, max_st
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Reinforcement Learning Script")
-    parser.add_argument("--env", choices=["FrozenLake-v1", "Taxi-v3"], required=True, help="Choose the environment")
+    parser.add_argument("--env", choices=["FrozenLake-v1", "Taxi-v3", "Custom"], required=True, help="Choose the environment")
     parser.add_argument("--config", choices=["config/taxi.yml", "config/frozenlake.yml"], required=True, help="Choose the configuration file")
     args = parser.parse_args()
 
@@ -54,6 +55,8 @@ if __name__ == "__main__":
         env = gym.make("FrozenLake-v1", map_name="4x4", is_slippery=False, render_mode="rgb_array")
     elif args.env == "Taxi-v3":
         env = gym.make("Taxi-v3", render_mode="rgb_array")
+    elif args.env == "Custom":
+        env = custom_env.Custom()
 
     state_space = env.observation_space.n
     action_space = env.action_space.n
