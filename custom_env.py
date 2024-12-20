@@ -7,10 +7,7 @@ class Custom:
     This is a class so you can design your own custom Q environment
     """
 
-    # TODO: Make this an input or something but for now that space is of size n
-    n: int = 5
-
-    def __init__(self, *args, **kwargs):
+    def __init__(self, grid_size: int = 5, n: int = 9):
         """
         Initialize the custom object.
 
@@ -18,12 +15,13 @@ class Custom:
             *args: Positional arguments.
             **kwargs: Keyword arguments.
         """
-        self.args = args
-        self.kwargs = kwargs
-        self.name = kwargs.get("name", "UnnamedComponent")
-        self.metadata = kwargs.get("metadata", {})
-        self.action_space = self.ActionSpace(self.n)
-        self.observation_space = self.ObservationSpace(self.n)
+        self.n = n
+        self.action_space = self.ActionSpace(n)
+        self.observation_space = self.ObservationSpace(n)
+
+        self.grid_size = grid_size
+        self.grid = np.zeros((grid_size, grid_size, 3), dtype=np.uint8)  # RGB grid
+        self.position = (0, 0)  # Initial position of the red square
 
     def step(self, action) -> Tuple[int, float, bool, bool, dict]:
         """
@@ -55,12 +53,20 @@ class Custom:
         Returns:
             None or an array, depending on the rendering mode.
         """
-        # print(f"Rendering {self.name} in {mode} mode.")
-        if mode == "rgb_array":
-            # Example rendering array
-            return np.array([[0, 0, 0], [255, 255, 255], [0, 0, 0]])
-        else:
-            return np.array([[0, 0, 0], [255, 255, 255], [0, 0, 0]])
+
+        # Create the innermost ndarray (shape: (3,), type: numpy.uint8)
+        inner_most_array = np.array([255, 128, 64], dtype=np.uint8)
+
+        # Create the middle ndarray (shape: (256, 3), type: numpy.uint8)
+        middle_array = np.tile(inner_most_array, (256, 1))
+
+        # Create the outermost ndarray (shape: (256, 256, 3), type: numpy.uint8)
+        outer_array = np.tile(middle_array[:, np.newaxis, :], (1, 256, 1))
+
+
+        self.grid = outer_array
+
+        return self.grid
         
     class ObservationSpace:
         """
@@ -82,21 +88,18 @@ class Custom:
             """
             return random.randint(0, self.n - 1)
 
-    # def close(self):
-    #     """
-    #     Perform cleanup tasks when the component is no longer needed.
-    #     Override this method in subclasses if needed.
-    #     """
-    #     print(f"Closing {self.name} and releasing resources.")
+if __name__ == '__main__':
+    # Create the innermost ndarray (shape: (3,), type: numpy.uint8)
+    inner_most_array = np.array([255, 128, 64], dtype=np.uint8)
 
-    # def __str__(self):
-    #     """
-    #     String representation of the object.
-    #     """
-    #     return f"<CustomGymBase(name={self.name})>"
+    # Create the middle ndarray (shape: (256, 3), type: numpy.ndarray)
+    middle_array = np.array([inner_most_array for _ in range(256)], dtype=object)
 
-    # def __repr__(self):
-    #     """
-    #     Detailed string representation of the object.
-    #     """
-    #     return f"CustomGymBase(name={self.name}, metadata={self.metadata})"
+    # Create the outermost ndarray (shape: (256, 256, 3), type: numpy.ndarray)
+    outer_array = np.array([middle_array for _ in range(256)], dtype=object)
+
+    # Print shapes and types
+    print(f"Outer array shape: {outer_array.shape}, type: {type(outer_array)}")
+    print(f"Middle array shape: {middle_array.shape}, type: {type(middle_array)}")
+    print(f"Inner most array shape: {inner_most_array.shape}, type: {type(inner_most_array)}")
+    print(f"Inner most array dtype: {type(inner_most_array[0])}")
