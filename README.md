@@ -71,3 +71,16 @@ Taxi environment results<br>
 ## License
 
 This project is licensed under the [MIT License](https://github.com/adhiiisetiawan/q-learning-grid-env/blob/main/LICENSE).
+
+
+## For NASA you can use this command to run our version
+
+python3 train.py --env Custom --config config/custom.yml
+
+If you want to load or save qtable this option is located in train.py
+
+I also set a limit to the saved frames in record.py to help prevent crashing, this will need to be changed if you wish to record
+
+You can change variables in the .yml file
+
+custom_env contains the skeleton that will be used for q learning
