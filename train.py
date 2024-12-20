@@ -7,7 +7,7 @@ import yaml
 from tqdm import tqdm
 from evaluate import evaluate_agent
 from record import record_video
-from utils import initialize_q_table, epsilon_greedy_policy
+from utils import initialize_q_table, epsilon_greedy_policy, save_qtable, load_qtable
 
 
 def train(n_training_episodes, min_epsilon, max_epsilon, decay_rate, env, max_steps, Qtable):
@@ -62,7 +62,13 @@ if __name__ == "__main__":
     action_space = env.action_space.n
 
     Qtable_frozenlake = initialize_q_table(state_space, action_space)
+    # Code to load qtable
+    # Qtable_frozenlake = load_qtable("qtable test")
     Qtable_frozenlake = train(n_training_episodes, min_epsilon, max_epsilon, decay_rate, env, max_steps, Qtable_frozenlake)
+
+    # Code to save qtable
+    # IMPORTANT NOTE: Make sure not to override any previous ones, change the name if needed
+    # save_qtable("qtable test", Qtable_frozenlake)
 
     mean_reward, std_reward = evaluate_agent(env, max_steps, n_eval_episodes, Qtable_frozenlake, eval_seed)
     print(f"Mean_reward={mean_reward:.2f} +/- {std_reward:.2f}")
