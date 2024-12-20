@@ -1,29 +1,33 @@
 from typing import Tuple, List, Dict
 import numpy as np
 import random
+import copy
 
 # This is the command to run the custom environment with the custom configuration
 # python3 train.py --env Custom --config config/custom.yml
+
+background_color = [255, 128, 64]
 
 class Custom:
     """
     This is a class so you can design your own custom Q environment
     """
 
-    def __init__(self, grid_size: int = 5, n: int = 9):
-        """
-        Initialize the custom object.
+    def __init__(self, grid_size: int = 16, pixels_per_square_side: int = 25, n: int = 9):
+        """Initializes the function
 
         Args:
-            *args: Positional arguments.
-            **kwargs: Keyword arguments.
+            grid_size (int, optional): This is how many squares there are in one side, it will make it into a square. Defaults to 5.
+            pixels_per_square_side (int, optional): This is how many pixels are in each square for rendering purposes. Defaults to 75.
+            n (int, optional): This is the action space and observation space values. Defaults to 9.
         """
         self.n = n
         self.action_space = self.ActionSpace(n)
         self.observation_space = self.ObservationSpace(n)
 
         self.grid_size = grid_size
-        self.grid = np.zeros((grid_size, grid_size, 3), dtype=np.uint8)  # RGB grid
+        self.pixels_per_grid_side: int = grid_size * pixels_per_square_side
+        self.render_grid = np.zeros((self.pixels_per_grid_side, self.pixels_per_grid_side, 3), dtype=np.uint8)  # RGB grid
         self.position = (0, 0)  # Initial position of the red square
 
     def step(self, action) -> Tuple[int, float, bool, bool, dict]:
@@ -46,7 +50,7 @@ class Custom:
         # print(f"Resetting {self.name} to its initial state.")
         return (0, None)
 
-    def render(self, mode="human") -> np.array:
+    def render(self) -> np.array:
         """
         Render the component, if applicable.
 
@@ -57,19 +61,46 @@ class Custom:
             None or an array, depending on the rendering mode.
         """
 
+        # Run this every turn to reset the graphics to the background color and create a new object so that we dont change the image before it
+        self.generate_graphics(self.pixels_per_grid_side)
+
+        # Add squares
+        self.draw_square(0, 0, 25, [255, 255, 0])
+
+        return self.render_grid
+    
+    def generate_graphics(self, size: int):
+        """This should be ran once each turn to reset all the graphics array
+
+        Args:
+            size (int): This is the sides of a square (in pixels, I suggest 256)
+
+        Returns:
+            _type_: img type file arrays with correct types to be rendered
+        """
+
         # Create the innermost ndarray (shape: (3,), type: numpy.uint8)
-        inner_most_array = np.array([255, 128, 64], dtype=np.uint8)
+        inner_most_array = np.array(background_color, dtype=np.uint8)
 
-        # Create the middle ndarray (shape: (256, 3), type: numpy.uint8)
-        middle_array = np.tile(inner_most_array, (256, 1))
+        # Create the middle ndarray (shape: (size, 3), type: numpy.uint8)
+        middle_array = np.tile(inner_most_array, (size, 1))
 
-        # Create the outermost ndarray (shape: (256, 256, 3), type: numpy.uint8)
-        outer_array = np.tile(middle_array[:, np.newaxis, :], (1, 256, 1))
+        # Create the outermost ndarray (shape: (size, size, 3), type: numpy.uint8)
+        outer_array = np.tile(copy.deepcopy(middle_array[:, np.newaxis, :]), (1, size, 1))
 
+        self.render_grid = outer_array
+    
+    def draw_square(self, pixel_x: int, pixel_y: int, size: int, square_color):
 
-        self.grid = outer_array
+        # Convert the square color to a numpy array
+        fixed_color = np.array(square_color, dtype=np.uint8)
 
-        return self.grid
+        # Draw squares on the graphics array
+        # for x, y in square_positions:
+        for x in range(pixel_x, pixel_x+size):
+            for y in range(pixel_y+size):
+                if 0 <= x < self.pixels_per_grid_side and 0 <= y < self.pixels_per_grid_side:
+                    self.render_grid[y:y+size, x:x+size] = fixed_color
         
     class ObservationSpace:
         """
