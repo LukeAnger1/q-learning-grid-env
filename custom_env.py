@@ -2,6 +2,9 @@ from typing import Tuple, List, Dict
 import numpy as np
 import random
 
+# This is the command to run the custom environment with the custom configuration
+# python3 train.py --env Custom --config config/custom.yml
+
 class Custom:
     """
     This is a class so you can design your own custom Q environment

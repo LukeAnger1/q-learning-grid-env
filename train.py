@@ -33,7 +33,7 @@ def train(n_training_episodes, min_epsilon, max_epsilon, decay_rate, env, max_st
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Reinforcement Learning Script")
     parser.add_argument("--env", choices=["FrozenLake-v1", "Taxi-v3", "Custom"], required=True, help="Choose the environment")
-    parser.add_argument("--config", choices=["config/taxi.yml", "config/frozenlake.yml"], required=True, help="Choose the configuration file")
+    parser.add_argument("--config", choices=["config/taxi.yml", "config/frozenlake.yml", "config/custom.yml"], required=True, help="Choose the configuration file")
     args = parser.parse_args()
 
     # Load configuration from the selected YAML file
